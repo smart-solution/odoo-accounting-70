@@ -29,21 +29,16 @@ class wizard_account_payment_order_split(osv.osv_memory):
 
     def porder_split(self, cr, uid, ids, context=None):
         """split payment order"""
-        print "CONTEXT:",context
         wf_service = netsvc.LocalService('workflow')
         split_qty = 1000
         for porder in self.pool.get('payment.order').browse(cr, uid, context['active_ids']):
             line_ids = [line.id for line in porder.line_ids]
             line_nbr = len(line_ids)
-            print "LINE IDS:",line_ids
-            print "LINE NBR:",line_nbr
             while line_nbr > split_qty:
-                print "NEW LINE NBR:",line_nbr
                 new_porder = self.pool.get('payment.order').copy(cr, uid, porder.id, {'line_ids':False}, context=context)
                 new_line_ids = line_ids[:split_qty]
                 line_ids = line_ids[split_qty:]
                 line_nbr = len(line_ids)
-                print "LEN LN:",line_nbr
                 self.pool.get('payment.line').write(cr, uid, new_line_ids, {'order_id':new_porder})
                 wf_service.trg_validate(uid, 'payment.order', new_porder, 'open', cr) 
         return True
