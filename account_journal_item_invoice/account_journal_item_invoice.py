@@ -54,4 +54,17 @@ class wizard_account_move_line_invoices(osv.osv_memory):
                 'domain': [('id','in',invoice_ids)]
         }
 
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+
+class account_bank_statement_line(osv.osv):
+
+    _inherit = 'account.bank.statement.line'
+
+    def onchange_partner_id(self, cr, uid, ids, partner_id, context=None):
+        res = super(account_bank_statement_line, self).onchange_partner_id(cr, uid, ids, partner_id, context=context)
+        line = self.browse(cr, uid, ids)
+        if line and line[0].account_id and partner_id:
+            del res['value']['account_id']
+        return res 
+
+
+# v:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
