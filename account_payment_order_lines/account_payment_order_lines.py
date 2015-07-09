@@ -30,7 +30,7 @@ class wizard_account_payment_order_split(osv.osv_memory):
     def porder_split(self, cr, uid, ids, context=None):
         """split payment order"""
         wf_service = netsvc.LocalService('workflow')
-        split_qty = 1000
+        split_qty = 10000
         for porder in self.pool.get('payment.order').browse(cr, uid, context['active_ids']):
             line_ids = [line.id for line in porder.line_ids]
             line_nbr = len(line_ids)
